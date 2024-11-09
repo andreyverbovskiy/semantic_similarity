@@ -1,0 +1,111 @@
+Project 26: Semantic Similarity 2
+We aim in this project to study a new semantic similarity for two short text document
+1. Consider two sentences S1 and S2 which are tokenized for instance, say S1 = (w1, w2,..,wn) and S2= (p1,
+p2, …, pm). Consider the approach implemented in Lab3 for calculating the semantic similarity between
+sentences using WordNet semantic similarity. We want to test this strategy on publicly available
+sentence database. For this purpose, use STSS-131 dataset, available in “A new benchmark dataset with
+production methodology for short text semantic similarity algorithms” by O’Shea, Bandar and Crockett
+(ACM Trans. on Speech and Language Processing, 10, 2013). Use Pearson correlation coefficient to test
+the correlation of your result with the provided human judgment. We shall call this similarity measure as
+Sim1
+2. We want to introduce another modification on this semantic similarity. For this purpose, suggest a script
+that proceeds in the following. If S1 and S2 do not contain any named-entity, then check if a negation
+term is present among the tokens. If the negation token occurs prior to an adjective or adverb token, then
+convert the corresponding token into its antonym; elseif the negation token occurs prior to a noun or a
+verb token, then no action is required. Next, use WordNet derivationally related form to turn each verb,
+adjective /adverb token into its corresponding noun token, so that each sentence contains only noun
+entities, then perform stopword and uncommon character removal. Next, calculate the sentence-to-
+sentence semantic similarity as the average of Wu-Palmer semantic similarity calculated over all pairs
+(N1i, N2j) where N1i and N2j stand for ith and jth noun-token of S1 and S2, respectively. If a named-
+entity occurs in only sentence, then this named entity is discarded as part of preprocessing stage. If both
+S1 and S2 contain named-entities, then overall sentence similarity is computed as a convex combination
+of named-entity similarity and the previously designed sematic similarity. In the case, the named-entity
+similarity is calculated as the cosine similarity of the Spacy embedding of the corresponding named-
+entities. If there are more than two pair of named-entities then use the maximum score among the
+various pairs of named-entity results. The convex combination factor is by default equal to 0.5. Suggest
+a script to implement the above approach and test the result on two a set of 10 sentence-pair that you
+may manually design such that some of them contain named-entities and others, no, and with various
+level of complexity and comment on the findings. We shall call this similarity measure as Sim2.
+3. Report the results of this semantic similarity Sim2 on STSS-131 dataset, and calculate the Pearson
+correlation with human judgment. Comment on the overall process whether it yields improvement and
+its limitations.
+4. Now we want to apply more state-of-the-art embedding approach. For this purpose, investigates
+embedding-based approach such as sentence-embedding, SpaCy embedding, Doc2vec embeddings,
+Universal Sentence Encoder, DistilBERT, see Exploring Diverse Techniques for Sentence Similarity |
+by Aneesha B Soman | Medium for implementations of some of these schemes, and report the result
+with STSS-131 dataset.
+5. Repeat this process for other datasets in SemEval2024, see GitHub - semantic-textual-
+relatedness/Semantic_Relatedness_SemEval2024: SemEval 2024 Task 1 : Textual Semantic
+Relatedness, and comment on your findings.
+6. There are several implementations available for Semeval2024, investigates some of the top performing
+models and suggest an approach that uses ensemble-learning to hybridize 3 state of the art models of
+your choice and compare the performance.
+7. Study another text similarity using both wordnet semantic similarity and string similarity provided in
+https://github.com/pritishyuvraj/SOC-PMI-Short-Text-Similarity-. Check the behavior of program for
+some intuitive sentences (very similar sentences, ambiguous and very dissimilar ones)
+8. Report the result of the above similarity on STSS-131 and report the corresponding Pearson correlation
+with human judgments
+9. Suggest an interface of your choice that would allow the user to input a textual query in the form of a
+pair of sentences and output the similarity score according to the various methods described above.
+10. Use appropriate literature to comment on the findings. Also, identify any additional input that would
+allow you to further elucidate any of the preceding, and use appropriate literature of corpus linguistic
+literature to justify your findings and comment on the obtained results. Finally, comment on the
+limitations and structural weakness of the data processing pipeline.
+
+
+
+
+
+def calculate_sim2(sentence1, sentence2):
+    """
+    Calculate the semantic similarity between two sentences using enhanced rules:
+    1. Handles negations.
+    2. Handles named entities separately.
+    3. Converts verbs/adjectives/adverbs to noun forms for comparability.
+
+    Parameters:
+        sentence1 (str): The first sentence.
+        sentence2 (str): The second sentence.
+
+    Returns:
+        float: Combined similarity score.
+    """
+    # Step 1: Preprocess sentences for negation handling
+    sentence1_processed = handle_negations(sentence1)
+    sentence2_processed = handle_negations(sentence2)
+
+    # Step 2: Check for named entities
+    entities1, entities2 = extract_named_entities(sentence1_processed, sentence2_processed)
+
+    # Step 3: Calculate similarity based on named entities or noun-based Wu-Palmer similarity
+    if entities1 and entities2:
+        similarity = calculate_entity_similarity(entities1, entities2)
+    else:
+        similarity = calculate_noun_similarity(sentence1_processed, sentence2_processed)
+    
+    return similarity
+
+
+
+
+
+
+# Placeholder functions for each part
+def handle_negations(sentence):
+    # Process sentence for negation handling
+    return sentence  # Replace this with actual negation logic
+
+def extract_named_entities(sentence1, sentence2):
+    # Extract named entities from both sentences
+    entities1 = []
+    entities2 = []
+    return entities1, entities2
+
+def calculate_entity_similarity(entities1, entities2):
+    # Calculate similarity between named entities
+    return 0.0
+
+def calculate_noun_similarity(sentence1, sentence2):
+    # Calculate noun-based Wu-Palmer similarity (Sim1 method as a fallback)
+    return calculate_sim1(sentence1, sentence2)
+
