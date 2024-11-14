@@ -10,8 +10,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download NLTK data (WordNet) needed for similarity calculations
+# Download NLTK data (WordNet) and SpaCy model needed for similarity calculations
 RUN python -m nltk.downloader wordnet
+RUN python -m spacy download en_core_web_sm
 
 # Copy the rest of the application code
 COPY . .
